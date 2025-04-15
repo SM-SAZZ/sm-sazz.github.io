@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Финансы">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="budget.png">
+    <title>Финансы</title>
+    <link rel="icon" type="image/png" href="budget.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Учет финансов</h1>
+            <div class="balance">
+                <div class="balance-row">
+                    <span>Баланс:</span>
+                    <span id="totalBalance">0 ₽</span>
+                </div>
+                <div class="balance-row">
+                    <span>На начало месяца:</span>
+                    <span id="startMonthBalance">0 ₽</span>
+                </div>
+                <div class="balance-row">
+                    <span>Изменение:</span>
+                    <span id="balanceDifference">0 ₽</span>
+                </div>
+            </div>
+            <div class="month-selector">
+                <select id="monthSelect">
+                    <!-- Месяцы будут добавлены динамически -->
+                </select>
+            </div>
+        </header>
+
+        <div class="content">
+            <section class="statistics">
+                <h2>Статистика расходов</h2>
+                <div class="chart-container">
+                    <canvas id="expensesChart"></canvas>
+                </div>
+            </section>
+
+            <section class="transactions">
+                <h2>История операций</h2>
+                <div id="transactionsList" class="transactions-list">
+                    <!-- Транзакции будут добавляться здесь -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Модальное окно для добавления категории -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Добавить категорию</h2>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="newCategoryName">Название категории</label>
+                    <input type="text" id="newCategoryName" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryType">Тип категории</label>
+                    <select id="categoryType" required>
+                        <option value="expense">Расход</option>
+                        <option value="income">Доход</option>
+                    </select>
+                </div>
+                <button type="submit">Добавить категорию</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для добавления транзакции -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Новая операция</h2>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="amount">Сумма</label>
+                    <input type="number" id="amount" step="0.01" min="0" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Категория</label>
+                    <div class="category-select-container">
+                        <select id="category" required>
+                            <!-- Категории будут добавляться динамически -->
+                        </select>
+                        <button type="button" id="addCategoryBtn" class="add-category-btn">+</button>
+                    </div>
+                </div>
+                <div class="form-group transaction-type-container" style="display: none;">
+                    <label for="transactionType">Тип операции</label>
+                    <select id="transactionType">
+                        <option value="expense">Расход</option>
+                        <option value="income">Доход</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Описание</label>
+                    <input type="text" id="description">
+                </div>
+                <button type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования транзакции -->
+    <div id="editTransactionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Редактировать операцию</h2>
+            <form id="editTransactionForm">
+                <input type="hidden" id="editTransactionId">
+                <div class="form-group">
+                    <label for="editAmount">Сумма</label>
+                    <input type="number" id="editAmount" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCategory">Категория</label>
+                    <div class="category-select-container">
+                        <select id="editCategory" required>
+                            <!-- Категории будут добавляться динамически -->
+                        </select>
+                        <button type="button" id="editAddCategoryBtn" class="add-category-btn">+</button>
+                    </div>
+                </div>
+                <div class="form-group transaction-type-container" style="display: none;">
+                    <label for="editTransactionType">Тип операции</label>
+                    <select id="editTransactionType">
+                        <option value="expense">Расход</option>
+                        <option value="income">Доход</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editDescription">Описание</label>
+                    <input type="text" id="editDescription">
+                </div>
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Плавающая кнопка -->
+    <div class="floating-button">
+        <button id="addButton">+</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html> 
